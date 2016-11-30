@@ -45,7 +45,7 @@ class App extends Component {
 
   sendNewMessage = (message) => {
 
-    const stringMessage = `${this.state.currentUser.name} says ${message}`
+    const stringMessage = `${message}`
     this.socket.send(stringMessage)
   }
 
@@ -70,7 +70,7 @@ class App extends Component {
 
     this.socket.onopen = (ev) => {
       console.log("Connected to the server")
-      this.socket.send("Hello")
+      // this.socket.send("Hello")
     }
 
     this.socket.onmessage = (ev) => {

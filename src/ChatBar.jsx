@@ -6,8 +6,8 @@ class ChatBar extends Component {
     super(props)
 
     this.state = {
-      username : "Enter your username (Optional)",
-      message: "Enter your message and hit enter"
+      username : this.props.currentUser.name,
+      message: ""
     }
 
   //   this.handleChange = this.handleChange.bind(this);
@@ -28,15 +28,32 @@ class ChatBar extends Component {
     console.log("Rendering <ChatBar/>");
     return (
     <footer className= "ChatBar">
-      <input id="username" defaultValue={this.props.currentUser.name}/>
-      <input id="new-message" defaultValue={this.state.message}
-        onChange = { (ev) => {this.setState({message: ev.target.value})}}
-        onKeyPress = { (ev) => { if (ev.key === 'Enter') {
-          // this.props.inputMessage(ev.target.value)
-          this.props.sendNewMessage(ev.target.value)
-        // (ev.target.value)
+
+      <input id="username" defaultValue={this.state.username}
+        onChange = { (ev) => {
+          // console.log(this.state.username)
+          this.setState({ username: ev.target.value })
+
         }
-      }}/>
+      }
+      />
+
+      <input id="new-message" placeholder = "Type message" defaultValue={this.state.message}
+
+        onChange = { (ev) => {
+          this.setState({ message: ev.target.value})
+        }
+      }
+
+        onKeyPress = { (ev) => {
+          if (ev.key === 'Enter') {
+          // this.props.inputMessage(ev.target.value)
+          this.props.sendNewMessage(ev.target.value);
+          console.log(this.state.username)
+          // (ev.target.value)
+        }
+      }
+    }/>
     </footer>
     )
   }
