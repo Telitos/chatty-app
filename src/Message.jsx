@@ -4,11 +4,12 @@ import React, {Component} from 'react';
 class Message extends Component {
 
   render() {
+    console.log("Rendering <Message/>");
     return(
-    <div className="message">
-      <span className="username">Anonymous</span>
-      <span className="content"> I won't be impressed with technology until I can download food.</span>
-    </div>
+    <li className="message">
+      <span className="username">{this.props.data.username}</span>
+      <span className="content">{this.props.data.content}</span>
+    </li>
     )
   }
 }
