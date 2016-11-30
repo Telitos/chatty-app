@@ -2,6 +2,7 @@
 
 const express = require('express');
 const SocketServer = require('ws').Server;
+const uuid = require('node-uuid');
 
 // Set the port to 4000
 const PORT = 4000;
@@ -20,9 +21,16 @@ const wss = new SocketServer({ server });
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
   console.log('Client connected');
-  ws.on('message', function incoming(message) {
-    console.log("received:", message)
-    ws.send(message)
+  ws.on('message', function incoming(data) {
+    console.log("received:", (data))
+
+    const id = uuid.v1()
+
+    toJsonData = JSON.parse(data)
+    toJsonData["id"] = id
+    console.log(toJsonData)
+
+    ws.send(JSON.stringify(toJsonData))
 
   })
 
