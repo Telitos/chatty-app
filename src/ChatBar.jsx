@@ -30,9 +30,10 @@ class ChatBar extends Component {
     <footer className= "ChatBar">
       <input id="username" defaultValue={this.props.currentUser.name}/>
       <input id="new-message" defaultValue={this.state.message}
-      onChange = { (ev) => {this.setState({message: ev.target.value})}}
-      onKeyPress = { (ev) => { if (ev.key === 'Enter') {
-        this.props.inputMessage(ev.target.value)
+        onChange = { (ev) => {this.setState({message: ev.target.value})}}
+        onKeyPress = { (ev) => { if (ev.key === 'Enter') {
+          // this.props.inputMessage(ev.target.value)
+          this.props.sendNewMessage(ev.target.value)
         // (ev.target.value)
         }
       }}/>
