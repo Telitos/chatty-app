@@ -1,10 +1,9 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react'
 
 
 class Message extends Component {
 
   render() {
-    console.log("Rendering <Message/>");
     return(
     <div className={this.props.data.class}>
       <span className="username">{this.props.data.username}</span>

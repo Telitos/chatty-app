@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
-import Message from './Message.jsx';
+import React, {Component} from 'react'
+import Message from './Message.jsx'
 
 class MessageList extends Component {
 
   render() {
-    console.log("Rendering <MessageList/>");
+    console.log("Rendering <MessageList/>")
     return(
       <div id="message-list" className="MessageList">
         { this.props.messages.map((message) => {
@@ -14,7 +14,7 @@ class MessageList extends Component {
         })
       }
       </div>
-      );
+      )
   }
 }
 

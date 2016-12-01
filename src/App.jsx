@@ -1,9 +1,9 @@
 "use strict"
 
-import React, {Component} from 'react';
-import ChatBar from './ChatBar.jsx';
-import MessageList from './MessageList.jsx';
-import uuid from 'node-uuid';
+import React, {Component} from 'react'
+import ChatBar from './ChatBar.jsx'
+import MessageList from './MessageList.jsx'
+import uuid from 'node-uuid'
 
 
 class App extends Component {
@@ -14,7 +14,7 @@ class App extends Component {
     const data = {
       currentUser: {name: "Anonymous"},
       messages: [], // messages coming from the server will be stored here as they arrive
-      userCount: 0// notifications: []
+      userCount: 0
     };
 
     super(props)
@@ -22,12 +22,6 @@ class App extends Component {
     this.state = data;
   }
 
-  // inputMessage = (incomingMessage) => {
-
-  //   // this.setState({currenId: newId})
-
-
-  // }
 
   updateUsername = (username) => {
     let currentUser
@@ -43,30 +37,23 @@ class App extends Component {
   usernameChangeNotification = (newUsername) => {
 
     const usernameNotification = `${this.state.currentUser.name} has changed their name to ${newUsername}`
-    console.log(usernameNotification)
     const notification = {type: "notification", content: usernameNotification}
-
     this.socket.send(JSON.stringify(notification))
-
     this.updateUsername(newUsername)
   }
 
   sendUserMessage = (message) => {
-
     const userMessage = {type: "userMessage", username: this.state.currentUser.name, content: message}
     this.socket.send(JSON.stringify(userMessage))
   }
 
   updateUserCounter = (message) => {
-    JSON.parse(message)
-    const userCount = message.content
+    const userCount = message.content - 1
     this.setState({userCount})
   }
 
   receivedBroadcast = (data) => {
-
     const message = JSON.parse(data);
-
     const appendMessage = (message) => {
       let messages = this.state.messages
       messages.push(message)
@@ -83,18 +70,13 @@ class App extends Component {
         appendMessage(message)
         break;
       case "userData":
-        updateUserCounter(message)
+        console.log("userData case entered", message)
+        this.updateUserCounter(message)
+        break;
       default:
         // show an error in the console if the message type is unknown
-        throw new Error("Unknown event type " + message.type);
+        throw new Error("Unknown event type " + message.type)
     }
-  // };
-
-
-    // const messages = this.state.messages;
-    // messages.push(JSON.parse(messageObject));
-
-    // this.setState({messages})
   }
 
 
@@ -103,8 +85,8 @@ class App extends Component {
     this.socket = new WebSocket("ws://localhost:4000")
 
     this.socket.onopen = (ev) => {
-      console.log("Connected to the server")
-      const connectionMessage = {type: "notification", content: `A new user has joined the chat as ${this.state.currentUser.name}`}
+      const connectionMessage = {type: "notification",
+      content: `A new user has joined the chat as ${this.state.currentUser.name}`}
       this.socket.send(JSON.stringify(connectionMessage))
     }
 
@@ -114,7 +96,6 @@ class App extends Component {
   }
 
   render() {
-    console.log("Rendering <App/>");
     return (
     <div className="wrapper">
       <nav>
@@ -132,12 +113,12 @@ class App extends Component {
   }
 }
 
-export default App;
+export default App
 
 
 // let CoolButton = props =>
 //   <button style={{ color: red }}>
-//     {props.children} !!!
+//     {props.children}
 //   </button>
 
 
