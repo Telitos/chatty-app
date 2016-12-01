@@ -6,7 +6,8 @@ class ChatBar extends Component {
     super(props)
 
     this.state = {
-      username : this.props.currentUser.name,
+      username : "",
+      // username : this.props.currentUser.name,
       message: ""
     }
   }
@@ -35,11 +36,6 @@ class ChatBar extends Component {
       let object = {};
       object[key] = ev.target.value;
       this.setState(object);
-
-      // if (key === 'username') {
-      //   this.props.updateUsername(this.state.username)
-      // }
-      // console.log('object', object, 'state', this.state)
     }
   }
 
@@ -52,14 +48,21 @@ class ChatBar extends Component {
 
   messageOnKeyChange = (ev) => {
     if (ev.key === 'Enter') {
-      this.props.sendNewMessage(ev.target.value);
+      this.props.sendUserMessage(ev.target.value);
       this.setState({message: ""});
     }
   }
 
   usernameOnKeyEnter = (ev) => {
-   if (ev.key === 'Enter') {
-      this.props.updateUsername(ev.target.value);
+    if (ev.key === 'Enter') {
+
+      console.log(this.state.username)
+      console.log(this.props.currentUser.name)
+      if (ev.target.value !== this.props.currentUser.name) {
+        console.log("different username!")
+        this.props.usernameChangeNotification(ev.target.value)
+      }
+      // this.props.updateUsername(ev.target.value);
     }
   }
 

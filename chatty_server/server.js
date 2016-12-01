@@ -32,6 +32,7 @@ wss.on('connection', (ws) => {
     toJsonData["id"] = id
     console.log(toJsonData)
 
+    console.log(wss.clients.length)
     wss.clients.forEach((client) => {
       client.send(JSON.stringify(toJsonData))
     })

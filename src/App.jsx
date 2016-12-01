@@ -12,7 +12,7 @@ class App extends Component {
 
 
     const data = {
-      currentUser: {},
+      currentUser: {name: "Anonymous"},
       messages: [] // messages coming from the server will be stored here as they arrive
     };
 
@@ -29,21 +29,57 @@ class App extends Component {
   // }
 
   updateUsername = (username) => {
-    const currentUser = {name: username}
-    this.setState({currentUser})
+    let currentUser
+    if (username === "") {
+      currentUser = {name: "Anonymous"}
+    } else {
+      currentUser = {name: username}
+    }
+      this.setState({currentUser})
+    }
+
+
+  usernameChangeNotification = (newUsername) => {
+
+    const usernameNotification = `${this.state.currentUser.name} has changed their name to ${newUsername}`
+    console.log(usernameNotification)
+    const notification = {type: "notification", content: usernameNotification}
+
+    this.socket.send(JSON.stringify(notification))
+
+    this.updateUsername(newUsername)
   }
 
-  sendNewMessage = (message) => {
-    const messageToJason = JSON.stringify({username: this.state.currentUser.name, content: message});
-    this.socket.send(messageToJason)
+  sendUserMessage = (message) => {
+
+    const userMessage = {type: "userMessage", username: this.state.currentUser.name, content: message}
+    this.socket.send(JSON.stringify(userMessage))
   }
 
-  receivedBroadcast = (messageObject) => {
+  receivedBroadcast = (data) => {
 
-    const messages = this.state.messages;
-    messages.push(JSON.parse(messageObject));
+    const message = JSON.parse(data);
 
-    this.setState({messages})
+    switch(message.type) {
+      case "userMessage":
+        const messages = this.state.messages;
+        messages.push(message);
+        this.setState({messages})
+        break;
+      case "notification":
+        // handle incoming notification
+        break;
+      default:
+        // show an error in the console if the message type is unknown
+        throw new Error("Unknown event type " + message.type);
+    }
+  // };
+
+
+    // const messages = this.state.messages;
+    // messages.push(JSON.parse(messageObject));
+
+    // this.setState({messages})
   }
 
 
@@ -69,8 +105,11 @@ class App extends Component {
         <h1>Chatty</h1>
       </nav>
         <MessageList messages={this.state.messages} />
-        <ChatBar currentUser={this.state.currentUser} inputMessage={this.inputMessage} sendNewMessage={this.sendNewMessage}
-          updateUsername={this.updateUsername}/>
+        <ChatBar
+        currentUser={this.state.currentUser}
+        sendUserMessage={this.sendUserMessage}
+        usernameChangeNotification={this.usernameChangeNotification}
+        />
     </div>
     );
   }
