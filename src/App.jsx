@@ -3,6 +3,7 @@
 import React, {Component} from 'react';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
+import uuid from 'node-uuid';
 
 
 class App extends Component {
@@ -10,64 +11,43 @@ class App extends Component {
   constructor(props) {
 
 
-    const data =
-
-  // const data = {
-  //   currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-  //   messages: [
-  //     { id: "1",
-  //       username: "Bob",
-  //       content: "Has anyone seen my marbles?",
-  //     },
-  //     { id: "2",
-  //       username: "Anonymous",
-  //       content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-  //     }
-  //   ],
-  //   currentId: 3
-  // };
+    const data = {
+      currentUser: {},
+      messages: [] // messages coming from the server will be stored here as they arrive
+    };
 
     super(props)
 
     this.state = data;
   }
 
-  inputMessage = (incomingMessage) => {
+  // inputMessage = (incomingMessage) => {
 
-    const id = this.state.currentId
-    const newId = id + 1
+  //   // this.setState({currenId: newId})
 
-    this.setState({currentId: newId})
-    const messages = this.state.messages;
-    const message = {id: newId, username: "Bob", content: incomingMessage}
-    messages.push(message);
 
-    this.setState({messages})
+  // }
 
+  updateUsername = (username) => {
+    const currentUser = {name: username}
+    this.setState({currentUser})
   }
 
   sendNewMessage = (message) => {
-
-    const stringMessage = `${message}`
-    this.socket.send(stringMessage)
+    const messageToJason = JSON.stringify({username: this.state.currentUser.name, content: message});
+    this.socket.send(messageToJason)
   }
 
-  receivedBroadcast = (message) => {
-    this.inputMessage(message)
-  }
+  receivedBroadcast = (messageObject) => {
 
+    const messages = this.state.messages;
+    messages.push(JSON.parse(messageObject));
+
+    this.setState({messages})
+  }
 
 
   componentDidMount() {
-    //  setTimeout(() => {
-    //   console.log("Simulating incoming message");
-    //   // Add a new message to the list of messages in the data store
-    //   const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-    //   const messages = this.state.messages.concat(newMessage)
-    //   // Update the state of the app component.
-    //   // Calling setState will trigger a call to render() in App and all child components.
-    //   this.setState({messages: messages})
-    // }, 3000);
 
     this.socket = new WebSocket("ws://localhost:4000")
 
@@ -79,7 +59,6 @@ class App extends Component {
     this.socket.onmessage = (ev) => {
       this.receivedBroadcast(ev.data)
     }
-
   }
 
   render() {
@@ -90,7 +69,8 @@ class App extends Component {
         <h1>Chatty</h1>
       </nav>
         <MessageList messages={this.state.messages} />
-        <ChatBar currentUser={this.state.currentUser} inputMessage={this.inputMessage} sendNewMessage={this.sendNewMessage}/>
+        <ChatBar currentUser={this.state.currentUser} inputMessage={this.inputMessage} sendNewMessage={this.sendNewMessage}
+          updateUsername={this.updateUsername}/>
     </div>
     );
   }
