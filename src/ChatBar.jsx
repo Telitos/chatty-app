@@ -32,9 +32,9 @@ class ChatBar extends Component {
 
   getHandleChangeFn = (key) => {
     return (ev) => {
-      let object = {}
-      object[key] = ev.target.value
-      this.setState(object)
+      let object = {};
+      object[key] = ev.target.value;
+      this.setState(object);
 
       // if (key === 'username') {
       //   this.props.updateUsername(this.state.username)
@@ -53,14 +53,13 @@ class ChatBar extends Component {
   messageOnKeyChange = (ev) => {
     if (ev.key === 'Enter') {
       this.props.sendNewMessage(ev.target.value);
-      console.log(this.state.username);
+      this.setState({message: ""});
     }
   }
 
   usernameOnKeyEnter = (ev) => {
    if (ev.key === 'Enter') {
       this.props.updateUsername(ev.target.value);
-      console.log(this.state.username);
     }
   }
 
@@ -80,8 +79,8 @@ class ChatBar extends Component {
 
       <input
         id = "username"
-        placeholder = "Type your username"
-        defaultValue = {this.state.username}
+        placeholder = "Type your username and press Enter"
+        value = {this.state.username}
         onChange = {this.getHandleChangeFn("username")}
         onKeyPress = {this.usernameOnKeyEnter}
           // this.props.updateUsername(this.state.username)
@@ -90,7 +89,7 @@ class ChatBar extends Component {
       <input
         id = "new-message"
         placeholder = "Type message"
-        defaultValue = {this.state.message}
+        value = {this.state.message}
         onChange = {this.getHandleChangeFn("message")}
         onKeyPress = {this.messageOnKeyChange}
         />
