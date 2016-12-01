@@ -20,7 +20,9 @@ const wss = new SocketServer({ server });
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
+
   console.log('Client connected');
+
   ws.on('message', function incoming(data) {
     console.log("received:", (data))
 
@@ -30,7 +32,9 @@ wss.on('connection', (ws) => {
     toJsonData["id"] = id
     console.log(toJsonData)
 
-    ws.send(JSON.stringify(toJsonData))
+    wss.clients.forEach((client) => {
+      client.send(JSON.stringify(toJsonData))
+    })
 
   })
 
