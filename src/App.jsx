@@ -13,8 +13,8 @@ class App extends Component {
 
     const data = {
       currentUser: {name: "Anonymous"},
-      messages: [] // messages coming from the server will be stored here as they arrive
-      // notifications: []
+      messages: [], // messages coming from the server will be stored here as they arrive
+      userCount: 0// notifications: []
     };
 
     super(props)
@@ -57,6 +57,12 @@ class App extends Component {
     this.socket.send(JSON.stringify(userMessage))
   }
 
+  updateUserCounter = (message) => {
+    JSON.parse(message)
+    const userCount = message.content
+    this.setState({userCount})
+  }
+
   receivedBroadcast = (data) => {
 
     const message = JSON.parse(data);
@@ -76,6 +82,8 @@ class App extends Component {
         message["class"] = "message system"
         appendMessage(message)
         break;
+      case "userData":
+        updateUserCounter(message)
       default:
         // show an error in the console if the message type is unknown
         throw new Error("Unknown event type " + message.type);
@@ -96,7 +104,8 @@ class App extends Component {
 
     this.socket.onopen = (ev) => {
       console.log("Connected to the server")
-      // this.socket.send("Hello")
+      const connectionMessage = {type: "notification", content: `A new user has joined the chat as ${this.state.currentUser.name}`}
+      this.socket.send(JSON.stringify(connectionMessage))
     }
 
     this.socket.onmessage = (ev) => {
@@ -110,6 +119,7 @@ class App extends Component {
     <div className="wrapper">
       <nav>
         <h1>Chatty</h1>
+        <span className="user-counter">{this.state.userCount} other user(s) connected</span>
       </nav>
         <MessageList messages={this.state.messages} />
         <ChatBar
