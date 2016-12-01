@@ -26,17 +26,17 @@ wss.on('connection', (ws) => {
   ws.on('message', function incoming(data) {
     console.log("received:", (data))
 
-    const id = uuid.v1()
+    const message = JSON.parse(data)
+    // if (message.type === "userMessage") {
 
-    toJsonData = JSON.parse(data)
-    toJsonData["id"] = id
-    console.log(toJsonData)
-
-    console.log(wss.clients.length)
+    //   const id = uuid.v1()
+    //   message["id"] = id
+    // }
+    console.log("broadcast:", JSON.stringify(message))
+    // console.log(wss.clients.length)
     wss.clients.forEach((client) => {
-      client.send(JSON.stringify(toJsonData))
+      client.send(JSON.stringify(message))
     })
-
   })
 
 

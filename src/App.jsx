@@ -14,6 +14,7 @@ class App extends Component {
     const data = {
       currentUser: {name: "Anonymous"},
       messages: [] // messages coming from the server will be stored here as they arrive
+      // notifications: []
     };
 
     super(props)
@@ -60,14 +61,20 @@ class App extends Component {
 
     const message = JSON.parse(data);
 
+    const appendMessage = (message) => {
+      let messages = this.state.messages
+      messages.push(message)
+      this.setState({messages})
+    }
+
     switch(message.type) {
       case "userMessage":
-        const messages = this.state.messages;
-        messages.push(message);
-        this.setState({messages})
+        message["class"] = "message"
+        appendMessage(message)
         break;
       case "notification":
-        // handle incoming notification
+        message["class"] = "message system"
+        appendMessage(message)
         break;
       default:
         // show an error in the console if the message type is unknown
