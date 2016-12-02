@@ -25,8 +25,8 @@ wss.on('connection', (ws) => {
   console.log('Client connected')
 
   let color = randomColor()
-  console.log("that's the color code:", color)
-  let usernameColor = {type: "userData", content: color}
+  let usernameColor = {type: "userData", color: color}
+
   ws.send(JSON.stringify(usernameColor))
 
   const broadcast = (message) => {
@@ -41,15 +41,10 @@ wss.on('connection', (ws) => {
   broadcast(usersNumber)
 
   ws.on('message', function incoming(data) {
-    console.log("received:", (data))
 
     const message = JSON.parse(data)
-    // if (message.type === "userMessage") {
-
       const id = uuid.v1()
       message["id"] = id
-    // }
-    console.log("broadcast:", JSON.stringify(message))
     broadcast(message)
   })
 

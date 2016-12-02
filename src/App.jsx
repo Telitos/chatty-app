@@ -1,5 +1,3 @@
-"use strict"
-
 import React, {Component} from 'react'
 import ChatBar from './ChatBar.jsx'
 import MessageList from './MessageList.jsx'
@@ -10,10 +8,9 @@ class App extends Component {
 
   constructor(props) {
 
-
     const data = {
       currentUser: {name: "Anonymous"},
-      messages: [], // messages coming from the server will be stored here as they arrive
+      messages: [],
       userCount: 0,
       currentColor: {color: "#000000"}
     };
@@ -23,43 +20,46 @@ class App extends Component {
     this.state = data;
   }
 
-
   updateUsername = (username) => {
+
     let currentUser
-    if (username === "") {
-      currentUser = {name: "Anonymous"}
-    } else {
       currentUser = {name: username}
-    }
       this.setState({currentUser})
     }
 
-
   usernameChangeNotification = (newUsername) => {
 
-    const usernameNotification = `${this.state.currentUser.name} has changed their name to ${newUsername}`
-    const notification = {type: "notification", content: usernameNotification}
-    this.socket.send(JSON.stringify(notification))
-    this.updateUsername(newUsername)
+    if(newUsername !== "") {
+      const usernameNotification = `${this.state.currentUser.name} has changed their name to ${newUsername}`
+      const notification = {type: "notification", content: usernameNotification}
+      this.socket.send(JSON.stringify(notification))
+      this.updateUsername(newUsername)
+    }
   }
 
   sendUserMessage = (message) => {
-    const userMessage = {type: "userMessage", username: this.state.currentUser.name, content: message}
+
+    const userMessage = {type: "userMessage", username: this.state.currentUser.name,
+    content: message, color: this.state.currentColor}
     this.socket.send(JSON.stringify(userMessage))
   }
 
   updateUserCounter = (message) => {
-    const userCount = message.content - 1
+
+    const userCount = message.content
     this.setState({userCount})
   }
 
-  updateUserColor = (color) => {
+  assignUserColor = (color) => {
+
     const newColor = {color}
     this.setState({currentColor: newColor})
   }
 
   receivedBroadcast = (data) => {
+
     const message = JSON.parse(data);
+
     const appendMessage = (message) => {
       let messages = this.state.messages
       messages.push(message)
@@ -70,26 +70,22 @@ class App extends Component {
       case "userMessage":
         message["class"] = "message"
         appendMessage(message)
-        break;
+        break
       case "notification":
         message["class"] = "message system"
         appendMessage(message)
-        break;
+        break
       case "userData":
-        console.log("userData case entered", message)
-        if (message.color) {
-          console.log("enter userData color side and the color is:", message.color)
-          this.upadateUserColor(message.color)
+        if (message.hasOwnProperty("color")) {
+          this.assignUserColor(message.color)
         } else {
             this.updateUserCounter(message)
           }
-      break;
+      break
       default:
-        // show an error in the console if the message type is unknown
         throw new Error("Unknown event type " + message.type)
     }
   }
-
 
   componentDidMount() {
 
@@ -111,16 +107,16 @@ class App extends Component {
     <div className="wrapper">
       <nav>
         <h1>Chatty</h1>
-        <span className="user-counter">{this.state.userCount} other user(s) connected</span>
+        <span className="user-counter">{this.state.userCount - 1} other user(s) connected</span>
       </nav>
-        <MessageList messages={this.state.messages} color={this.state.color}/>
+        <MessageList messages={this.state.messages} />
         <ChatBar
         currentUser={this.state.currentUser}
         sendUserMessage={this.sendUserMessage}
         usernameChangeNotification={this.usernameChangeNotification}
         />
     </div>
-    );
+    )
   }
 }
 
