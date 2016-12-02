@@ -45,7 +45,10 @@
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
+    "color": "^0.11.4",
     "node-uuid": "1.4.7",
+    "random": "^1.0.0-beta-1",
+    "randomcolor": "^0.4.4",
     "react": "15.2.1",
     "react-dom": "15.2.1"
   }

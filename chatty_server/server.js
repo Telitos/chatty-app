@@ -3,6 +3,7 @@
 const express = require('express')
 const SocketServer = require('ws').Server
 const uuid = require('node-uuid')
+const randomColor = require('randomcolor')
 
 // Set the port to 4000
 const PORT = 4000
@@ -22,6 +23,11 @@ const wss = new SocketServer({ server })
 wss.on('connection', (ws) => {
 
   console.log('Client connected')
+
+  let color = randomColor()
+  console.log("that's the color code:", color)
+  let usernameColor = {type: "userData", content: color}
+  ws.send(JSON.stringify(usernameColor))
 
   const broadcast = (message) => {
     wss.clients.forEach((client) => {
