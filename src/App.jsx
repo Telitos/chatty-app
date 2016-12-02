@@ -61,7 +61,7 @@ class App extends Component {
     const message = JSON.parse(data);
 
     const appendMessage = (message) => {
-      let messages = this.state.messages
+      const messages = this.state.messages
       messages.push(message)
       this.setState({messages})
     }
